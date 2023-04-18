@@ -9,11 +9,12 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
-import os
 from dotenv import load_dotenv
+import os
 
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,7 +28,24 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG")
 
+#Simple JWT 
+ACCESS_TOKEN_LIFETIME =  os.environ.get('ACCESS_TOKEN_LIFETIME')
+REFRESH_TOKEN_LIFETIME =  os.environ.get('REFRESH_TOKEN_LIFETIME')
+ROTATE_REFRESH_TOKENS =  os.environ.get('ROTATE_REFRESH_TOKENS')
+BLACKLIST_AFTER_ROTATION =  os.environ.get('BLACKLIST_AFTER_ROTATION')
+UPDATE_LAST_LOGIN =  os.environ.get('UPDATE_LAST_LOGIN')
+VERIFYING_KEY =  os.environ.get('VERIFYING_KEY')
+AUDIENCE =  os.environ.get('AUDIENCE')
+ISSUER =  os.environ.get('ISSUER')
+
+
+
+
+
+
 ALLOWED_HOSTS = []
+
+
 
 
 # Application definition
@@ -39,8 +57,37 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework'
+    'rest_framework',
+    'project',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
+    'django_filters',
 ]
+AUTH_USER_MODEL = 'project.Account'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'userID',
+    'USER_ID_CLAIM': 'userID',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+
+    'JTI_CLAIM': 'jti',
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME_EXP_CLAIM': 'exp',
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
