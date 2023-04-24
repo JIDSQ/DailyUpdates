@@ -1,46 +1,44 @@
 from rest_framework import permissions
 
-#permission for readonly on dailyupte
-class IsAdminStaffReadOnly(permissions.BasePermission):
+
+class IsOwner(permissions.BasePermission):
+    
+    def has_object_permission(self, request, view, obj):
+        #check if the requesting user is the owner
+        if request.method in permissions.SAFE_METHODS:
+            #For, GET, HEAD, and OPTIONS requests, anyone can access
+            return True
+        else:
+            #For POST, PUT, PATCH and DELETE request, only the owner can access
+            return obj.user == request.user
+
+
+class UpdateIsOwner(permissions.BasePermission):
+    
+    def has_object_permission(self, request, view, obj):
+        #check if the requesting user is the owner
+        if request.method in permissions.SAFE_METHODS:
+            #For, GET, HEAD, and OPTIONS requests, anyone can access
+            return True
+        else:
+            #For POST, PUT, PATCH and DELETE request, only the owner can access
+            return obj.owner == request.user
+        
+
+class IsAdmin(permissions.BasePermission):
 
     def has_permission(self, request, view):
+        #if request.method in ['POST', 'PUT', 'PATCH', 'DELETE'] and request.user.role=='admin':
+       #     return True
         if request.method in permissions.SAFE_METHODS:
             return True
-        elif request.user.is_authenticated and not (request.user.is_staff or request.user.is_superuser):
-            return True
-        elif request.user.is_superuser or request.user.is_staff:
-            return True
         else:
-            return False
-        
-#permission Profile. owner can edit, others readonly (profile)
-class ProfileOwnerReadOnly(permissions.BasePermission):                                   
+            return request.user.role=='admin'
 
+class IsReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        if(request.method in permissions.SAFE_METHODS):
+        if request.method in permissions.SAFE_METHODS:
             return True
         
-        return request.user == obj.user
-
-
-#Permission on Daily update. owner can edit, others readonly (dailyUpdate)
-class DailyUpdateOwnerCanEdit(permissions.BasePermission):
-
-    def has_object_permission(self, request, view, obj):
-        if request.method == 'GET':
-            return True
-        elif request.method in ['PUT', 'PATCH']:
-            return obj.account == request.user
         else:
-            return False
-
-#permission Profile
-class ProfileOwnerCanEdit(permissions.BasePermission):
-
-    def has_object_permission(self, request, view, obj):
-        if request.method == 'GET':
-            return True
-        elif request.method in ['PUT', 'PATCH']:
-            return obj.user == request.user
-        else:
-            return False
+            return obj.announcementID == request.user
