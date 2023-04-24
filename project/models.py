@@ -27,6 +27,7 @@ class Account(AbstractUser):
     email = models.CharField(max_length=120, unique=True)
     role = models.CharField(max_length=20, default='admin', choices=(('admin', 'Admin'), ('staff', 'Staff')))
     is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     username = None
@@ -37,23 +38,31 @@ class Account(AbstractUser):
     def profile(self):
         return self.profile
 
-    def save(self, *args, **kwargs):
-        created = not self.pk
-        super().save(*args, **kwargs)
-        if created:
-            Profile.objects.create(user=self)
 
 class Profile(models.Model):
-    user = models.OneToOneField(Account, on_delete=models.CASCADE)
+    user = models.OneToOneField(Account, primary_key= True, on_delete=models.CASCADE)
     firstName = models.CharField(max_length=100, null=False)
     lastName =  models.CharField(max_length=100, null=False)
     position =  models.CharField(max_length=100, null=False)
 
     
 class DailyUpdate(models.Model):
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    updateID = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    owner = models.ForeignKey(Account, on_delete=models.CASCADE)
     accomplishedTask = models.TextField()
     inProgressTask = models.TextField()
-    datetime = models.DateField()
+    datetime = models.DateTimeField(auto_now_add=True)
     blocker = models.TextField()
+
+class Announcement(models.Model):
+    announcementID = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    adminID= models.ForeignKey(Account, on_delete=models.CASCADE)
+    title =  models.CharField(max_length=100, null=False)
+    description = models.TextField()
+    datetime = models.DateTimeField(auto_now_add=True)
+    lastEdited = models.DateTimeField(auto_now=True)
+
+
+
+
 

@@ -29,14 +29,12 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = os.environ.get("DEBUG")
 
 #Simple JWT 
-ACCESS_TOKEN_LIFETIME =  os.environ.get('ACCESS_TOKEN_LIFETIME')
-REFRESH_TOKEN_LIFETIME =  os.environ.get('REFRESH_TOKEN_LIFETIME')
-ROTATE_REFRESH_TOKENS =  os.environ.get('ROTATE_REFRESH_TOKENS')
-BLACKLIST_AFTER_ROTATION =  os.environ.get('BLACKLIST_AFTER_ROTATION')
-UPDATE_LAST_LOGIN =  os.environ.get('UPDATE_LAST_LOGIN')
-VERIFYING_KEY =  os.environ.get('VERIFYING_KEY')
-AUDIENCE =  os.environ.get('AUDIENCE')
-ISSUER =  os.environ.get('ISSUER')
+
+
+
+
+
+
 
 
 
@@ -72,6 +70,16 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME' : timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME' : timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS' :  os.environ.get('ROTATE_REFRESH_TOKENS'),
+    'BLACKLIST_AFTER_ROTATION' : os.environ.get('BLACKLIST_AFTER_ROTATION'),
+    'UPDATE_LAST_LOGIN' :  os.environ.get('UPDATE_LAST_LOGIN'),
+    'VERIFYING_KEY' :  os.environ.get('VERIFYING_KEY'),
+    'AUDIENCE' :  os.environ.get('AUDIENCE'),
+    'ISSUER' : os.environ.get('ISSUER'),
+
+
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
 
