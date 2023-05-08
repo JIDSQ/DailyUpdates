@@ -30,21 +30,7 @@ DEBUG = os.environ.get("DEBUG")
 
 #Simple JWT 
 
-
-
-
-
-
-
-
-
-
-
-
-ALLOWED_HOSTS = []
-
-
-
+ALLOWED_HOSTS = ["http://localhost:3000",  '127.0.0.1']
 
 # Application definition
 
@@ -60,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'django_filters',
+    'corsheaders',
 ]
 AUTH_USER_MODEL = 'project.Account'
 
@@ -98,13 +85,20 @@ SIMPLE_JWT = {
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://127.0.0.1:3000',
+     'http://127.0.0.1:8000'
 ]
 
 ROOT_URLCONF = 'dailyupdates.urls'
